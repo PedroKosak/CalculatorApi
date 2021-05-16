@@ -12,14 +12,13 @@ namespace RestWithDotNet.Controllers
     public class CalculatorController : ControllerBase
     {
         private readonly ILogger<CalculatorController> _logger;
-
         public CalculatorController(ILogger<CalculatorController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet("sum/{firstNumber}/{secondNumber}")]
-        public IActionResult Get(string firstNumber, string secondNumber)
+        public IActionResult GetSum(string firstNumber, string secondNumber)
         {
             if(IsNumeric(firstNumber) && IsNumeric(secondNumber))
             {
@@ -29,14 +28,37 @@ namespace RestWithDotNet.Controllers
             return BadRequest("Invalid Input");
         }
 
-        private decimal ConvertToDecimal(string strNumber)
+        [HttpGet("sub/{firstNumber}/{secondNumber}")]
+        public IActionResult GetSub(string firstNumber, string secondNumber)
         {
-            decimal decimalValue;
-            if(decimal.TryParse(strNumber, out decimalValue))
+            if(IsNumeric(firstNumber) && IsNumeric(secondNumber))
             {
-                return decimalValue;
+                var sub = ConvertToDecimal(firstNumber) - ConvertToDecimal(secondNumber);
+                return Ok(sub.ToString());
             }
-            return 0;
+            return BadRequest("Invalid Input");
+        }
+
+        [HttpGet("mult/{firstNumber}/{secondNumber}")]
+        public IActionResult GetMult(string firstNumber, string secondNumber)
+        {
+            if(IsNumeric(firstNumber) && IsNumeric(secondNumber))
+            {
+                var mult = ConvertToDecimal(firstNumber) * ConvertToDecimal(secondNumber);
+                return Ok(mult.ToString());
+            }
+            return BadRequest("Invalid Input");
+        }
+
+        [HttpGet("div/{firstNumber}/{secondNumber}")]
+        public IActionResult GetDiv(string firstNumber, string secondNumber)
+        {
+            if(IsNumeric(firstNumber) && IsNumeric(secondNumber))
+            {
+                var Div = ConvertToDecimal(firstNumber) / ConvertToDecimal(secondNumber);
+                return Ok(Div.ToString());
+            }
+            return BadRequest("Invalid Input");
         }
 
         private bool IsNumeric(string strNumber)
@@ -48,6 +70,15 @@ namespace RestWithDotNet.Controllers
                 System.Globalization.NumberFormatInfo.InvariantInfo, 
                 out number);
             return isNumber;
+        }
+        private decimal ConvertToDecimal(string strNumber)
+        {
+            decimal decimalValue;
+            if(decimal.TryParse(strNumber, out decimalValue))
+            {
+                return decimalValue;
+            }
+            return 0;
         }
     }
 }
